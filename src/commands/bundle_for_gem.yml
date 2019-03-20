@@ -1,0 +1,28 @@
+description: Bundles and caches a gem.
+parameters:
+  bundler_version:
+    type: string
+    default: '2.0.1'
+  ruby_version:
+    type: string
+  project:
+    type: string
+steps:
+  - restore_cache:
+      keys:
+      - v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+
+  - run:
+      name: Update bundler
+      command: |
+        echo 'export BUNDLER_VERSION=<< parameters.bundler_version >>' >> $BASH_ENV
+        gem install bundler -v << parameters.bundler_version >>
+
+  - run:
+      name: Install dependencies
+      command: bundle check || bundle install
+
+  - save_cache:
+      key: v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+      paths:
+      - ~/project/vendor/bundle

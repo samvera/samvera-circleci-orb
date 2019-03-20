@@ -1,0 +1,19 @@
+description: Installs a solr core into a running Solr docker container.
+parameters:
+  core_name:
+    type: string
+    default: "hydra-test"
+  solr_port:
+    type: string
+    default: '8985'
+  solr_config_path:
+    type: string
+    default: 'solr/config'
+steps:
+  - run:
+      name: Load config into solr
+      command: |
+        cd << parameters.solr_config_path >>
+        zip -1 -r solr_config.zip ./*
+        curl -H "Content-type:application/octet-stream" --data-binary @solr_config.zip "http://localhost:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
+        curl -H 'Content-type: application/json' http://localhost:<< parameters.solr_port >>/api/collections/ -d '{create: {name: << parameters.core_name >>, config: solrconfig, numShards: 1}}'
