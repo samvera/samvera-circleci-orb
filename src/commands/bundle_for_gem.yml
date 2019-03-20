@@ -10,7 +10,7 @@ parameters:
 steps:
   - restore_cache:
       keys:
-      - v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+        - v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
 
   - run:
       name: Update bundler
@@ -25,4 +25,4 @@ steps:
   - save_cache:
       key: v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
       paths:
-      - ~/project/vendor/bundle
+        - ~/project/vendor/bundle
