@@ -1,0 +1,29 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@8.1.0
+  samvera: samvera/circle-orb@dev:alpha
+
+executors:
+  ci-base:
+    resource_class: small
+    docker:
+      - image: cibuilds/base
+
+jobs:
+# yaml anchor filters
+workflows:
+  lint_pack-validate_publish-dev:
+    jobs:
+      - orb-tools/lint
+
+      - orb-tools/pack:
+          requires:
+            - orb-tools/lint
+      # Disabled until we have an API token - maybe forever?
+      #
+      # - orb-tools/publish-dev:
+      #     context: orb-publishing
+      #     orb-name: samvera/circleci-orb
+      #     requires:
+      #       - orb-tools/pack
