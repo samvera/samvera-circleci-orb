@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@8.1.0
-  samvera: samvera/circle-orb@dev:alpha
+  samvera: samvera/circleci-orb@dev:alpha
 
 executors:
   ci-base:
