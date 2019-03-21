@@ -1,0 +1,5 @@
+description: Runs rubocop
+steps:
+  - run:
+      name: Call Rubocop
+      command: bundle exec rubocop
