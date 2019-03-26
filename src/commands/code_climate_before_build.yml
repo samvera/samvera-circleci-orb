@@ -1,0 +1,14 @@
+description: Install the Code Climate reporter then run before build.
+parameters:
+  version:
+    type: string
+    default: latest
+steps:
+  - run:
+      command: |
+        if [[ $(command -v cc-test-reporter) == "" ]]; then
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-<< parameters.version >>-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+        fi
+  - run:
+      command: ./cc-test-reporter before-build
