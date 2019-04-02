@@ -4,6 +4,7 @@ parameters:
     type: string
 steps:
   - restore_cache:
+      name: Restore test app from cache
       keys:
         - << parameters.cache_key >>
 
@@ -13,6 +14,7 @@ steps:
         [ -e ./.internal_test_app ] || bundle exec rake engine_cart:generate
 
   - save_cache:
+      name: Save test app cache
       key: << parameters.cache_key >>
       paths:
         - ./.internal_test_app
