@@ -13,8 +13,8 @@ steps:
   - run:
       name: Generate a cache key that optionally includes a .gemspec file
       command: |
-        echo $(find . -d 1 -type f \( -name Gemfile -o -name << parameters.project >>.gemspec \) | md5sum | cut -d' ' -f1) >> BUNDLE_CACHE_KEY
-        
+        echo $(find . -d 1 -type f \( -name Gemfile -o -name << parameters.project >>.gemspec \) -exec md5sum {} \; | md5sum | cut -d' ' -f1) >> BUNDLE_CACHE_KEY
+
   - restore_cache:
       name: Restore bundle from cache
       keys:
