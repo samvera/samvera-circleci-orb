@@ -18,6 +18,7 @@ steps:
       command: |
         echo 'export BUNDLER_VERSION=<< parameters.bundler_version >>' >> $BASH_ENV
         gem install bundler -v << parameters.bundler_version >>
+
   - run:
       name: Install dependencies
       command: bundle check || bundle install
