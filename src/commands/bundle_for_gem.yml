@@ -8,30 +8,22 @@ parameters:
   project:
     type: string
 steps:
-  # md5sum's Gemfile and << parameters.project >>.gemspec (optionally, if it exists) to generate a unique
-  # cache key representing the contents of both files.
-  - run:
-      name: Generate a cache key that optionally includes a .gemspec file
-      command: |
-        echo $(find . -d 1 -type f \( -name Gemfile -o -name << parameters.project >>.gemspec \) -exec md5sum {} \; | md5sum | cut -d' ' -f1) >> BUNDLE_CACHE_KEY
-
   - restore_cache:
       name: Restore bundle from cache
       keys:
-        - v1-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>
+        - v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
 
   - run:
       name: Update bundler
       command: |
         echo 'export BUNDLER_VERSION=<< parameters.bundler_version >>' >> $BASH_ENV
         gem install bundler -v << parameters.bundler_version >>
-
   - run:
       name: Install dependencies
       command: bundle check || bundle install
 
   - save_cache:
       name: Save bundle cache
-      key: v1-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>
+      key: v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
       paths:
         - ~/project/vendor/bundle
