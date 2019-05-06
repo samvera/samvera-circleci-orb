@@ -3,8 +3,11 @@ parameters:
   ruby_version:
     type: string
     default: '2.5.5'
+  ruby_type:
+    type: string
+    default: 'ruby'
 docker:
-  - image: circleci/ruby:<< parameters.ruby_version >>-node-browsers-legacy
+  - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
 environment:
   BUNDLE_PATH: vendor/bundle
   BUNDLE_JOBS: 4
