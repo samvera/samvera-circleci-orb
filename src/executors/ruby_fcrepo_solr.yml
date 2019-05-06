@@ -9,8 +9,11 @@ parameters:
   solr_port:
     type: string
     default: '8985'
+  ruby_type:
+    type: string
+    default: 'ruby'
 docker:
-  - image: circleci/ruby:<< parameters.ruby_version >>-node-browsers-legacy
+  - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
   - image: ualbertalib/docker-fcrepo4:<< parameters.fcrepo_version>>
     environment:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
