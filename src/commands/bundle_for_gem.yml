@@ -7,11 +7,14 @@ parameters:
     type: string
   project:
     type: string
+  cache_version:
+    type: string
+    default: '1'
 steps:
   - restore_cache:
       name: Restore bundle from cache
       keys:
-        - v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+        - v<< parameters.cache_version >>-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
 
   - run:
       name: Update bundler
@@ -25,6 +28,6 @@ steps:
 
   - save_cache:
       name: Save bundle cache
-      key: v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+      key: v<< parameters.cache_version >>-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
       paths:
         - ~/project/vendor/bundle
