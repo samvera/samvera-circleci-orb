@@ -13,7 +13,12 @@ steps:
   - run:
       name: Load the default Solr config from the active-fedora Gem
       command: |
-        cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/config"
-        zip -1 -r solr_config.zip ./*
-        curl -H "Content-type:application/octet-stream" --data-binary @solr_config.zip "http://localhost:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
+        if [ -d "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/conf" ]
+        then
+          cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/conf"
+        else
+          cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/config"
+        fi
+        zip -1 -r solr_conf.zip ./*
+        curl -H "Content-type:application/octet-stream" --data-binary @solr_conf.zip "http://localhost:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
         curl -H 'Content-type: application/json' http://localhost:<< parameters.solr_port >>/api/collections/ -d '{create: {name: << parameters.core_name >>, config: solrconfig, numShards: 1}}'
