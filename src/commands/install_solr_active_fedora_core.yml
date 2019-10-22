@@ -8,6 +8,9 @@ parameters:
     default: '8985'
 steps:
   - run:
+      name: '[DEPRECATED] samvera/install_solr_active_fedora_core'
+      command: echo "This command is deprecated and will be removed in 1.0.  Use samvera/install_solr_core instead."
+  - run:
       name: Wait for Solr
       command: dockerize -wait tcp://localhost:<< parameters.solr_port >> -timeout 1m
   - run:
