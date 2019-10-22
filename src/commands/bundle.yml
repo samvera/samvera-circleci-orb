@@ -32,4 +32,4 @@ steps:
       name: Save bundle cache
       key: v1-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
       paths:
-        - ~/project/vendor/bundle
+        - vendor/bundle
