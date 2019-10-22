@@ -1,10 +1,13 @@
-description: Bundles and caches app and gem.
+description: Bundles and caches an app or gem.
 parameters:
   bundler_version:
     type: string
     default: '2.0.1'
   ruby_version:
     type: string
+  cache_version:
+    type: string
+    default: '1'
 steps:
   # Generate md5s for any Gemfile*, and *.gemspec files to generate a unique
   # cache key representing the contents of all files.
@@ -16,7 +19,10 @@ steps:
   - restore_cache:
       name: Restore bundle from cache
       keys:
-        - v1-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
+        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
+        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>
+        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}
+        - v<< parameters.cache_version >>-bundle
 
   - run:
       name: Update bundler
@@ -30,6 +36,6 @@ steps:
 
   - save_cache:
       name: Save bundle cache
-      key: v1-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
+      key: v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
       paths:
         - ~/project/vendor/bundle

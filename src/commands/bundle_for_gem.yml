@@ -11,6 +11,10 @@ parameters:
     type: string
     default: '1'
 steps:
+  - run:
+      name: "[DEPRECATED] samvera/bundle_for_gem"
+      command: echo "This command is deprecated and will be removed in 1.0.  Use samvera/bundle instead and remove the project parameter."
+
   - restore_cache:
       name: Restore bundle from cache
       keys:
