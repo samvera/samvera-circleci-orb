@@ -2,7 +2,7 @@ description: Box running FCRepo, Solr, Ruby, and Redis.
 parameters:
   fcrepo_version:
     type: string
-    default: '4.7'
+    default: '4.7.5'
   ruby_version:
     type: string
     default: '2.5.5'
@@ -17,7 +17,7 @@ parameters:
     default: 'ruby'
 docker:
   - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
-  - image: ualbertalib/docker-fcrepo4:<< parameters.fcrepo_version>>
+  - image: samvera/fcrepo4:<< parameters.fcrepo_version>>
     environment:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
   - image: solr:7-alpine
