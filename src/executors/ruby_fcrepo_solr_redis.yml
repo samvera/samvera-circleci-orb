@@ -3,26 +3,29 @@ parameters:
   fcrepo_version:
     type: string
     default: '4.7.5'
-  ruby_version:
-    type: string
-    default: '2.5.5'
-  solr_port:
-    type: string
-    default: '8985'
   redis_version:
     type: string
     default: '4'
   ruby_type:
     type: string
     default: 'ruby'
+  ruby_version:
+    type: string
+    default: '2.5.5'
+  solr_port:
+    type: string
+    default: '8985'
+  solr_version:
+    type: string
+    default: '7-alpine'
 docker:
   - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
-  - image: samvera/fcrepo4:<< parameters.fcrepo_version>>
+  - image: samvera/fcrepo4:<< parameters.fcrepo_version >>
     environment:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
-  - image: solr:7-alpine
-    command: bin/solr -cloud -noprompt -f -p <<parameters.solr_port>>
-  - image: circleci/redis:<<parameters.redis_version>>
+  - image: solr:<< parameters.solr_version >>
+    command: bin/solr -cloud -noprompt -f -p << parameters.solr_port >>
+  - image: circleci/redis:<< parameters.redis_version >>
 environment:
   BUNDLE_PATH: vendor/bundle
   BUNDLE_JOBS: 4
