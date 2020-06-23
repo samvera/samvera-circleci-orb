@@ -1,11 +1,11 @@
 description: Box just Ruby
 parameters:
-  ruby_version:
-    type: string
-    default: '2.5.5'
   ruby_type:
     type: string
     default: 'ruby'
+  ruby_version:
+    type: string
+    default: '2.5.5'
 docker:
   - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
 environment:
