@@ -24,6 +24,29 @@ commands are named and documented to avoid surprises.
 Circle has general information about [executors](https://circleci.com/docs/2.0/executor-intro/#section=configuration),
 and [commands](https://circleci.com/docs/2.0/using-orbs/#commands) that may be useful as well.
 
+## Best practices
+
+The executors allow you to set parameters for the dependencies they use. For instance, you could have in
+your parameters
+
+```
+solr_version:
+    type: string
+    default: '7-slim'
+```
+
+or in your build matrix:
+
+```
+ruby_type: 'ruby'
+```
+
+Different dependencies have different parameters, but all of them allow you to specify a version. You should do
+this! The orb is permissive in the versions it allows, and may surprise you by upgrading when you least expect
+it.
+
+Be prepared! Control your destiny! Specify versions!
+
 ## Releasing new versions
 
 1. Install the CircleCI Client -
