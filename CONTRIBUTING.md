@@ -18,7 +18,7 @@ All code contributors must have an Individual Contributor License Agreement
 an institution, the institution must have a Corporate Contributor License
 Agreement (cCLA) on file.
 
-https://wiki.duraspace.org/display/samvera/Samvera+Community+Intellectual+Property+Licensing+and+Ownership
+https://wiki.lyrasis.org/display/samvera/Samvera+Community+Intellectual+Property+Licensing+and+Ownership
 
 You should also add yourself to the `CONTRIBUTORS.md` file in the root of the project.
 
@@ -45,25 +45,23 @@ You should also add yourself to the `CONTRIBUTORS.md` file in the root of the pr
 
 * Fork the repository on GitHub
 * Create a topic branch from where you want to base your work.
-  * This is usually the master branch.
-  * To quickly create a topic branch based on master; `git branch fix/master/my_contribution master`
-  * Then checkout the new branch with `git checkout fix/master/my_contribution`.
-  * Please avoid working directly on the `master` branch.
+  * This is usually the main branch.
+  * To quickly create a topic branch based on main; `git branch fix/main/my_contribution main`
+  * Then checkout the new branch with `git checkout fix/main/my_contribution`.
+  * Please avoid working directly on the `main` branch.
   * You may find the [hub suite of commands](https://github.com/defunkt/hub) helpful
 * Make sure you have added sufficient tests and documentation for your changes.
-  * Test functionality with RSpec; Test features / UI with Capybara.
 * Run _all_ the tests to assure nothing else was accidentally broken.
 
 ### Documenting Code
 
-* All new public methods, modules, and classes should include inline documentation in [YARD](http://yardoc.org/).
+* All new public methods, modules, and classes should include inline documentation.
   * Documentation should seek to answer the question "why does this code exist?"
 * Document private / protected methods as desired.
 * If you are working in a file with no prior documentation, do try to document as you gain understanding of the code.
   * If you don't know exactly what a bit of code does, it is extra likely that it needs to be documented. Take a stab at it and ask for feedback in your pull request. You can use the 'blame' button on GitHub to identify the original developer of the code and @mention them in your comment.
   * This work greatly increases the usability of the code base and supports the on-ramping of new committers.
   * We will all be understanding of one another's time constraints in this area.
-* [Getting started with YARD](http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md)
 
 ### Committing changes
 
@@ -109,15 +107,15 @@ You should also add yourself to the `CONTRIBUTORS.md` file in the root of the pr
 ### Submitting Changes
 
 * Read the article ["Using Pull Requests"](https://help.github.com/articles/using-pull-requests) on GitHub.
-* Make sure your branch is up to date with its parent branch (i.e. master)
-  * `git checkout master`
+* Make sure your branch is up to date with its parent branch (i.e. main)
+  * `git checkout main`
   * `git pull --rebase`
   * `git checkout <your-branch>`
-  * `git rebase master`
+  * `git rebase main`
   * It is a good idea to run your tests again.
 * If you've made more than one commit take a moment to consider whether squashing commits together would help improve their logical grouping.
   * [Detailed Walkthrough of One Pull Request per Commit](http://ndlib.github.io/practices/one-commit-per-pull-request/)
-  * `git rebase --interactive master` ([See Github help](https://help.github.com/articles/interactive-rebase))
+  * `git rebase --interactive main` ([See Github help](https://help.github.com/articles/interactive-rebase))
   * Squashing your branch's changes into one commit is "good form" and helps the person merging your request to see everything that is going on.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request from your fork to the project.
@@ -127,12 +125,12 @@ You should also add yourself to the `CONTRIBUTORS.md` file in the root of the pr
 We adopted [Github's Pull Request Review](https://help.github.com/articles/about-pull-request-reviews/) for our repositories.
 Common checks that may occur in our repositories:
 
-1. Travis CI - where our automated tests are running
+1. CircleCI - where our automated tests are running
 2. Approval Required - Github enforces at least one person approve a pull request. Also, all reviewers that have chimed in must approve.
 
 If one or more of the required checks failed (or are incomplete), the code should not be merged (and the UI will not allow it). If all of the checks have passed, then anyone on the project (including the pull request submitter) may merge the code.
 
-*Example: Carolyn submits a pull request, Justin reviews the pull request and approves. However, Justin is still waiting on other checks (Travis CI is usually the culprit), so he does not merge the pull request. Eventually, all of the checks pass. At this point, Carolyn or anyone else may merge the pull request.*
+*Example: Carolyn submits a pull request, Justin reviews the pull request and approves. However, Justin is still waiting on other checks (CircleCI is usually the culprit), so he does not merge the pull request. Eventually, all of the checks pass. At this point, Carolyn or anyone else may merge the pull request.*
 
 #### Things to Consider When Reviewing
 
