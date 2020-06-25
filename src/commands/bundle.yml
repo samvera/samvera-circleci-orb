@@ -39,3 +39,11 @@ steps:
       key: v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
       paths:
         - vendor/bundle
+
+  - run:
+      name: List gems
+      command: bundle list > /tmp/gem_list.txt
+
+  - store_artifacts:
+      path: /tmp/gem_list.txt
+      destination: bundle
