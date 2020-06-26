@@ -1,14 +1,8 @@
 version: 2.1
 
-###########################################################
-## GitHub: https://github.com/CircleCI-Public/slack-orb ##
-###########################################################
-
-
 description: |
-  A set of tasks to centralize testing infrastructure for Samvera Core Components
-# Create your key here: https://api.slack.com/incoming-webhooks
+  The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier.
 
-## Requirements ##
-## - Bash
-## - cURL
+display:
+    source_url: https://github.com/samvera-labs/samvera-circleci-orb
+    home_url: https://samvera.org/
