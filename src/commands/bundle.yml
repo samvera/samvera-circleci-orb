@@ -21,7 +21,7 @@ steps:
       # ending in ".gemspec". No, the '.' is not expanded like with regex.
       # `-exec md5sum {} \+` - Execute md5sum on the files found. BUT! The '+' means call md5sum only once,
       # with all the filenames one after another.
-      # `| sort -o "BUNDLE_CACHE_KEY"` send the output of the find command into sort, and write the output to a
+      # `| sort -o "BUNDLE_CACHE_KEY"` - Send the output of the find command into sort, and write the output to a
       # file named 'BUNDLE_CACHE_KEY'. The files will be sorted by their md5 rather than their name.
       command: >
         find .
@@ -31,17 +31,17 @@ steps:
         -exec md5sum {} \+
         | sort -o "BUNDLE_CACHE_KEY"
 
-  - store_artifacts:
-      path: "BUNDLE_CACHE_KEY"
-      destination: "BUNDLE_CACHE_KEY"
+  - run:
+      name: Show contents of BUNDLE_CACHE_KEY
+      command: cat "BUNDLE_CACHE_KEY"
 
   - restore_cache:
       name: Restore bundle from cache
       keys:
-        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
-        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>
-        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}
-        - v<< parameters.cache_version >>-bundle
+        - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>-bundle{{ checksum "BUNDLE_CACHE_KEY" }}
+        - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>
+        - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>
+        - v<< parameters.cache_version >>
 
   - run:
       name: Update bundler
@@ -55,7 +55,7 @@ steps:
 
   - save_cache:
       name: Save bundle cache
-      key: v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
+      key: v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>-bundle{{ checksum "BUNDLE_CACHE_KEY" }}
       paths:
         - vendor/bundle
 
