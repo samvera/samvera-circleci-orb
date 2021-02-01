@@ -49,6 +49,14 @@ Be prepared! Control your destiny! Specify versions!
 
 ## Releasing new versions
 
+The orb will automatically publish two dev versions with every build that passes checks.
+The first is always `dev:alpha`. Since this is not a unique identifier, this version may be quickly
+overwritten. The other is `dev:<SHA1>`, where the SHA1 is the first seven characters of the commit hash
+that was built.
+Orb versions that begin with `dev:` can be overwritten by anyone, and only exist for 90 days.
+
+Additionally, publishing dev and production versions of the orb can be done manually:
+
 1. Install the CircleCI Client -
    [https://circleci.com/docs/2.0/local-cli/#installation](https://circleci.com/docs/2.0/local-cli/#installation)
 2. `circleci setup` (You'll need an API key)
