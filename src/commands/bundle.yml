@@ -9,20 +9,39 @@ parameters:
     type: string
     default: '1'
 steps:
-  # Generate md5s for any Gemfile*, and *.gemspec files to generate a unique
-  # cache key representing the contents of all files.
   - run:
       name: Generate a cache key for the bundle
-      command: |
-        echo $(find . -type f \( -name "Gemfile*" -o -name "*.gemspec" \) -exec md5sum {} \;) >> "BUNDLE_CACHE_KEY"
+      # Let's break this command down step by step.
+      # `command : >` - YAML magic to concatenate the lines, stripping indentation equal to the next line.
+      # `find .` - To start, we're going to find things decending from the currect directory.
+      # `-path "*vendor/bundle" -prune -o` - Prevent find from searching the vendor/bundle directory.
+      # This helps with idempotentcy, as gems will be installed into vendor/bundle, and they have Gemfiles.
+      # `-path "*.git" -prune -o` - Prevent find from searching the .git directory.
+      # `-type f \( -name "Gemfile*" -o -name "*.gemspec" \)` - Match any file beginning with "Gemfile" or
+      # ending in ".gemspec". No, the '.' is not expanded like with regex.
+      # `-exec md5sum {} \+` - Execute md5sum on the files found. BUT! The '+' means call md5sum only once,
+      # with all the filenames one after another.
+      # `| sort -o "BUNDLE_CACHE_KEY"` - Send the output of the find command into sort, and write the output to a
+      # file named 'BUNDLE_CACHE_KEY'. The files will be sorted by their md5 rather than their name.
+      command: >
+        find .
+        -path "*vendor/bundle" -prune -o
+        -path "*.git" -prune -o
+        -type f \( -name "Gemfile*" -o -name "*.gemspec" \)
+        -exec md5sum {} \+
+        | sort -o "BUNDLE_CACHE_KEY"
+
+  - run:
+      name: Show contents of BUNDLE_CACHE_KEY
+      command: cat "BUNDLE_CACHE_KEY"
 
   - restore_cache:
       name: Restore bundle from cache
       keys:
-        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
-        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>
-        - v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}
-        - v<< parameters.cache_version >>-bundle
+        - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>-bundle{{ checksum "BUNDLE_CACHE_KEY" }}
+        - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>
+        - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>
+        - v<< parameters.cache_version >>
 
   - run:
       name: Update bundler
@@ -36,7 +55,7 @@ steps:
 
   - save_cache:
       name: Save bundle cache
-      key: v<< parameters.cache_version >>-bundle-{{ checksum "BUNDLE_CACHE_KEY" }}-<< parameters.ruby_version >>-<< parameters.bundler_version >>
+      key: v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>-bundle{{ checksum "BUNDLE_CACHE_KEY" }}
       paths:
         - vendor/bundle
 
