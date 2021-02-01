@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-    orb-tools: circleci/orb-tools@9.1.0
+    orb-tools: circleci/orb-tools@10.0.3
     samvera: samvera/circleci-orb@dev:alpha
 
 orb_promotion_filters: &orb_promotion_filters
@@ -20,7 +20,8 @@ parameters:
 
 jobs:
     integration-tests:
-        executor: orb-tools/ubuntu
+        docker:
+            - image: cimg/base:stable
         steps:
             - checkout
             # TODO: integration testing
@@ -31,16 +32,12 @@ workflows:
         jobs:
             - orb-tools/lint
 
-            # Disable shellcheck, which fails when we use CircleCI params
-            # - orb-tools/shellcheck
-
             - orb-tools/pack
 
             - orb-tools/publish-dev:
                 orb-name: samvera/circleci-orb
                 requires:
                     - orb-tools/lint
-                    # - orb-tools/shellcheck
                     - orb-tools/pack
 
             - orb-tools/trigger-integration-tests-workflow:
