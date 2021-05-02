@@ -1,0 +1,346 @@
+version: 2.1
+description: |
+    The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier.
+display:
+    home_url: https://samvera.org/
+    source_url: https://github.com/samvera-labs/samvera-circleci-orb
+commands:
+    bundle:
+        description: Bundles and caches an app or gem.
+        parameters:
+            bundler_version:
+                default: 2.0.1
+                type: string
+            cache_version:
+                default: "1"
+                type: string
+            ruby_version:
+                type: string
+        steps:
+            - run:
+                command: |
+                    find . -path "*vendor/bundle" -prune -o -path "*.git" -prune -o -type f \( -name "Gemfile*" -o -name "*.gemspec" \) -exec md5sum {} \+ | sort -o "BUNDLE_CACHE_KEY"
+                name: Generate a cache key for the bundle
+            - run:
+                command: cat "BUNDLE_CACHE_KEY"
+                name: Show contents of BUNDLE_CACHE_KEY
+            - restore_cache:
+                keys:
+                    - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>-bundle{{ checksum "BUNDLE_CACHE_KEY" }}
+                    - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>
+                    - v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>
+                    - v<< parameters.cache_version >>
+                name: Restore bundle from cache
+            - run:
+                command: |
+                    echo 'export BUNDLER_VERSION=<< parameters.bundler_version >>' >> $BASH_ENV
+                    gem install bundler -v << parameters.bundler_version >>
+                name: Update bundler
+            - run:
+                command: bundle check || bundle install
+                name: Install dependencies
+            - save_cache:
+                key: v<< parameters.cache_version >>-ruby<< parameters.ruby_version >>-bundler<< parameters.bundler_version >>-bundle{{ checksum "BUNDLE_CACHE_KEY" }}
+                name: Save bundle cache
+                paths:
+                    - vendor/bundle
+            - run:
+                command: bundle list > /tmp/gem_list.txt
+                name: List gems
+            - store_artifacts:
+                destination: bundle
+                path: /tmp/gem_list.txt
+    bundle_for_gem:
+        description: Bundles and caches a gem.
+        parameters:
+            bundler_version:
+                default: 2.0.1
+                type: string
+            cache_version:
+                default: "1"
+                type: string
+            project:
+                type: string
+            ruby_version:
+                type: string
+        steps:
+            - run:
+                command: echo "This command is deprecated and will be removed in 1.0.  Use samvera/bundle instead and remove the project parameter."
+                name: '[DEPRECATED] samvera/bundle_for_gem'
+            - restore_cache:
+                keys:
+                    - v<< parameters.cache_version >>-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+                name: Restore bundle from cache
+            - run:
+                command: |
+                    echo 'export BUNDLER_VERSION=<< parameters.bundler_version >>' >> $BASH_ENV
+                    gem install bundler -v << parameters.bundler_version >>
+                name: Update bundler
+            - run:
+                command: bundle check || bundle install
+                name: Install dependencies
+            - save_cache:
+                key: v<< parameters.cache_version >>-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+                name: Save bundle cache
+                paths:
+                    - ~/project/vendor/bundle
+    cached_checkout:
+        description: Perform a cache-enabled git checkout.
+        steps:
+            - restore_cache:
+                keys:
+                    - v1-source-{{ .Branch }}-{{ .Revision }}
+                name: Restore code from cache
+            - checkout
+            - save_cache:
+                key: v1-source-{{ .Branch }}-{{ .Revision }}
+                name: Save code cache
+                paths:
+                    - .git
+    engine_cart_generate:
+        description: Use engine_cart to generate an internal test app and caches it.
+        parameters:
+            cache_key:
+                type: string
+        steps:
+            - restore_cache:
+                keys:
+                    - << parameters.cache_key >>
+                name: Restore test app from cache
+            - run:
+                command: |
+                    [ -e ./.internal_test_app ] || bundle exec rake engine_cart:generate
+                name: Generate test app
+            - save_cache:
+                key: << parameters.cache_key >>
+                name: Save test app cache
+                paths:
+                    - ./.internal_test_app
+    install_solr_active_fedora_core:
+        description: Installs a solr core into a running Solr docker container.
+        parameters:
+            core_name:
+                default: hydra-test
+                type: string
+            solr_port:
+                default: "8985"
+                type: string
+        steps:
+            - run:
+                command: echo "This command is deprecated and will be removed in 1.0.  Use samvera/install_solr_core instead."
+                name: '[DEPRECATED] samvera/install_solr_active_fedora_core'
+            - run:
+                command: dockerize -wait tcp://localhost:<< parameters.solr_port >> -timeout 1m
+                name: Wait for Solr
+            - run:
+                command: |
+                    if [ -d "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/conf" ]
+                    then
+                      cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/conf"
+                    else
+                      cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/config"
+                    fi
+                    zip -1 -r solr_conf.zip ./*
+                    curl -H "Content-type:application/octet-stream" --data-binary @solr_conf.zip "http://localhost:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
+                    curl -H 'Content-type: application/json' http://localhost:<< parameters.solr_port >>/api/collections/ -d '{create: {name: << parameters.core_name >>, config: solrconfig, numShards: 1}}'
+                name: Load the default Solr config from the active-fedora Gem
+    install_solr_core:
+        description: Installs a solr core into a running Solr docker container.
+        parameters:
+            core_name:
+                default: hydra-test
+                type: string
+            solr_config_path:
+                default: solr/config
+                type: string
+            solr_port:
+                default: "8985"
+                type: string
+        steps:
+            - run:
+                command: dockerize -wait tcp://localhost:<< parameters.solr_port >> -timeout 1m
+                name: Wait for Solr
+            - run:
+                command: |
+                    if [ -d << parameters.solr_config_path >> ]
+                    then
+                      cd << parameters.solr_config_path >>
+                    else
+                      if [ -d "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/conf" ]
+                      then
+                        cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/conf"
+                      else
+                        cd "$(bundle show active-fedora)/lib/generators/active_fedora/config/solr/templates/solr/config"
+                      fi
+                    fi
+                    zip -1 -r solr_conf.zip ./*
+                    curl -H "Content-type:application/octet-stream" --data-binary @solr_conf.zip "http://localhost:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
+                    curl -H 'Content-type: application/json' http://localhost:<< parameters.solr_port >>/api/collections/ -d '{create: {name: << parameters.core_name >>, config: solrconfig, numShards: 1}}'
+                name: Create solr core
+    parallel_rspec:
+        description: Run RSpec in Parallel, storing test_results for CircleCI to parse.
+        steps:
+            - run:
+                command: |
+                    mkdir /tmp/test-results
+                    bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+                name: Run rspec in parallel
+            - store_test_results:
+                path: /tmp/test-results
+            - store_artifacts:
+                destination: test-results
+                path: /tmp/test-results
+    rubocop:
+        description: Runs rubocop
+        parameters:
+            cache_version:
+                default: "1"
+                type: string
+        steps:
+            - restore_cache:
+                keys:
+                    - v<< parameters.cache_version >>-rubocop-{{ .Environment.CIRCLE_BRANCH }}
+                    - v<< parameters.cache_version >>-rubocop
+                name: Restore rubocop cache
+            - run:
+                command: bundle exec rubocop --parallel
+                name: Call Rubocop in parallel
+            - save_cache:
+                key: v<< parameters.cache_version >>-rubocop-{{ .Environment.CIRCLE_BRANCH }}
+                name: Save rubocop cache
+                paths:
+                    - ~/.cache
+executors:
+    ruby:
+        description: Box just Ruby
+        docker:
+            - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
+        environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_PATH: vendor/bundle
+            BUNDLE_RETRY: 3
+            RACK_ENV: test
+            RAILS_ENV: test
+            SPEC_OPTS: --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec.xml --format progress
+        parameters:
+            ruby_type:
+                default: ruby
+                type: string
+            ruby_version:
+                default: 2.5.5
+                type: string
+    ruby_fcrepo_solr:
+        description: Box running FCRepo, Solr, and Ruby.
+        docker:
+            - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
+            - environment:
+                CATALINA_OPTS: -Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC
+              image: samvera/fcrepo4:<< parameters.fcrepo_version >>
+            - command: bin/solr -cloud -noprompt -f -p << parameters.solr_port >>
+              image: solr:<< parameters.solr_version >>
+        environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_PATH: vendor/bundle
+            BUNDLE_RETRY: 3
+            FCREPO_TEST_PORT: 8080
+            RACK_ENV: test
+            RAILS_ENV: test
+            SPEC_OPTS: --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec.xml --format progress
+        parameters:
+            fcrepo_version:
+                default: 4.7.5
+                type: string
+            ruby_type:
+                default: ruby
+                type: string
+            ruby_version:
+                default: 2.5.5
+                type: string
+            solr_port:
+                default: "8985"
+                type: string
+            solr_version:
+                default: slim
+                type: string
+    ruby_fcrepo_solr_redis:
+        description: Box running FCRepo, Solr, Ruby, and Redis.
+        docker:
+            - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
+            - environment:
+                CATALINA_OPTS: -Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC
+              image: samvera/fcrepo4:<< parameters.fcrepo_version >>
+            - command: bin/solr -cloud -noprompt -f -p << parameters.solr_port >>
+              image: solr:<< parameters.solr_version >>
+            - image: circleci/redis:<< parameters.redis_version >>
+        environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_PATH: vendor/bundle
+            BUNDLE_RETRY: 3
+            FCREPO_TEST_PORT: 8080
+            RACK_ENV: test
+            RAILS_ENV: test
+            SPEC_OPTS: --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec.xml --format progress
+        parameters:
+            fcrepo_version:
+                default: 4.7.5
+                type: string
+            redis_version:
+                default: "4"
+                type: string
+            ruby_type:
+                default: ruby
+                type: string
+            ruby_version:
+                default: 2.5.5
+                type: string
+            solr_port:
+                default: "8985"
+                type: string
+            solr_version:
+                default: slim
+                type: string
+    ruby_fcrepo_solr_redis_postgres:
+        description: Box running FCRepo, Solr, Ruby, Redis, Postgres.
+        docker:
+            - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
+            - environment:
+                CATALINA_OPTS: -Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC
+              image: samvera/fcrepo4:<< parameters.fcrepo_version >>
+            - command: bin/solr -cloud -noprompt -f -p << parameters.solr_port >>
+              image: solr:<< parameters.solr_version >>
+            - image: circleci/redis:<< parameters.redis_version >>
+            - image: circleci/postgres:<< parameters.postgres_version >>
+        environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_PATH: vendor/bundle
+            BUNDLE_RETRY: 3
+            FCREPO_TEST_PORT: 8080
+            POSTGRES_DB: circle_test
+            POSTGRES_HOST: 127.0.0.1
+            POSTGRES_USER: postgres
+            RACK_ENV: test
+            RAILS_ENV: test
+            SPEC_OPTS: --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec.xml --format progress
+        parameters:
+            fcrepo_version:
+                default: 4.7.5
+                type: string
+            postgres_version:
+                default: 9.6.2-alpine
+                type: string
+            redis_version:
+                default: "4"
+                type: string
+            ruby_type:
+                default: ruby
+                type: string
+            ruby_version:
+                default: 2.5.5
+                type: string
+            solr_port:
+                default: "8985"
+                type: string
+            solr_version:
+                default: slim
+                type: string
+
