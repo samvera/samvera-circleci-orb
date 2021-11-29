@@ -5,10 +5,10 @@ parameters:
     default: '4.7.5'
   postgres_version:
     type: string
-    default: '9.6.2-alpine'
+    default: '9.6'
   redis_version:
     type: string
-    default: '4'
+    default: '6.2'
   ruby_type:
     type: string
     default: 'ruby'
@@ -22,14 +22,14 @@ parameters:
     type: string
     default: 'slim'
 docker:
-  - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
+  - image: cimg/<< parameters.ruby_type >>:<< parameters.ruby_version >>-browsers
   - image: samvera/fcrepo4:<< parameters.fcrepo_version >>
     environment:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
   - image: solr:<< parameters.solr_version >>
     command: bin/solr -cloud -noprompt -f -p << parameters.solr_port >>
-  - image: circleci/redis:<< parameters.redis_version >>
-  - image: circleci/postgres:<< parameters.postgres_version >>
+  - image: cimg/redis:<< parameters.redis_version >>
+  - image: cimg/postgres:<< parameters.postgres_version >>
 environment:
   BUNDLE_PATH: vendor/bundle
   BUNDLE_JOBS: 4
