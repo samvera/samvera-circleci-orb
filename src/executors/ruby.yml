@@ -7,7 +7,7 @@ parameters:
     type: string
     default: '2.5.5'
 docker:
-  - image: circleci/<< parameters.ruby_type >>:<< parameters.ruby_version >>-node-browsers-legacy
+  - image: cimg/<< parameters.ruby_type >>:<< parameters.ruby_version >>-browsers
 environment:
   BUNDLE_PATH: vendor/bundle
   BUNDLE_JOBS: 4
