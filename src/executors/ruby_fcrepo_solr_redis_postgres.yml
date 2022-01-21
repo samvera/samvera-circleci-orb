@@ -28,8 +28,9 @@ docker:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
   - image: zookeeper:3.4
   - image: solr:<< parameters.solr_version >>
-    command: server/scripts/cloud-scripts/zkcli.sh -zkhost localhost:2181 -cmd put /security.json '{"authentication":{"blockUnknown": true, "class":"solr.BasicAuthPlugin", "credentials":{"solr":"IV0EHq1OnNrj6gvRCwvFwTrZ1+z1oBbnQdiVC3otuq0= Ndd7LKvVBAaZIF0QAVi1ekCfAJXr1GGfLtRUXhgrF8c="}, "realm":"My Solr users", "forwardCredentials": false}, "authorization":{ "class":"solr.RuleBasedAuthorizationPlugin", "permissions":[{"name":"security-edit", "role":"admin"}], "user-role":{"solr":"admin"}}}'  && bin/solr -cloud -noprompt -f -p 8888 -z localhost:2181
-    command: bin/solr -cloud -noprompt -f -p << parameters.solr_port >>
+    environment:
+      SECURITY_JSON: '{"authentication":{"blockUnknown": true, "class":"solr.BasicAuthPlugin", "credentials":{"solr":"IV0EHq1OnNrj6gvRCwvFwTrZ1+z1oBbnQdiVC3otuq0= Ndd7LKvVBAaZIF0QAVi1ekCfAJXr1GGfLtRUXhgrF8c="}, "realm":"My Solr users", "forwardCredentials": false}, "authorization":{ "class":"solr.RuleBasedAuthorizationPlugin", "permissions":[{"name":"security-edit", "role":"admin"}], "user-role":{"solr":"admin"}}}'
+    command: server/scripts/cloud-scripts/zkcli.sh -zkhost localhost:2181 -cmd put /security.json $SECURITY_JSON && bin/solr -cloud -noprompt -f -p << parameters.solr_port >> -z localhost:2181
   - image: redis:<< parameters.redis_version >>
   - image: cimg/postgres:<< parameters.postgres_version >>
 environment:
