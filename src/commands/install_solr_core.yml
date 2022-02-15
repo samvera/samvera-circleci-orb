@@ -28,5 +28,5 @@ steps:
           fi
         fi
         zip -1 -r solr_conf.zip ./*
-        curl -H "Content-type:application/octet-stream" --data-binary @solr_conf.zip "http://localhost:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
-        curl -H 'Content-type: application/json' http://localhost:<< parameters.solr_port >>/api/collections/ -d '{create: {name: << parameters.core_name >>, config: solrconfig, numShards: 1}}'
+        curl -H "Content-type:application/octet-stream" --data-binary @solr_conf.zip "http://solr:SolrRocks@127.0.0.1:<< parameters.solr_port >>/solr/admin/configs?action=UPLOAD&name=solrconfig"
+        curl -H 'Content-type: application/json' http://solr:SolrRocks@127.0.0.1:<< parameters.solr_port >>/api/collections/ -d '{create: {name: << parameters.core_name >>, config: solrconfig, numShards: 1}}'
