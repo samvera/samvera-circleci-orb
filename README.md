@@ -2,10 +2,23 @@
 
 The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier.
 
+Code: [![Build Status](https://circleci.com/gh/samvera-labs/samvera-circleci-orb.svg?style=svg)](https://circleci.com/gh/samvera-labs/samvera-circleci-orb)
+
 The orb provides executors that include common Samvera dependencies, and commands to help set up and run your tests.
 
 More information about orbs in general is available in [CircleCI's docs](https://circleci.com/docs/),
 and up-to-date documentation about the Samvera orb exists on [the orb's CircleCI page](https://circleci.com/orbs/registry/orb/samvera/circleci-orb)
+
+[![Samvera Slack](https://img.shields.io/badge/Slack-Jump%20In!-blueviolet)](http://slack.samvera.org/)
+
+## Primary Contacts
+
+### Product Owner
+[jrgriffiniii](https://github.com/jrgriffiniii)
+
+## Help
+
+The Samvera community is here to help. Please see our [support guide](./SUPPORT.md).
 
 ## Using the orb
 
@@ -65,3 +78,17 @@ Additionally, publishing dev and production versions of the orb can be done manu
 5. `circleci orb publish src/orb.yml samvera/circleci-orb@dev:alpha`
 6. If Ready for permanent version bump: `circleci orb publish promote
    samvera/circleci-orb@dev:alpha [major/minor/patch]`
+
+## Acknowledgments
+
+This software has been developed by and is brought to you by the Samvera community.  Learn more at the [Samvera website](http://samvera.org/).
+
+![Samvera Logo](https://samvera.atlassian.net/wiki/download/attachments/1682341933/Samvera_logo_horizontal_200.png?api=v2)
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/samvera-labs/samvera-circleci-orb/.
+
+If you're working on PR for this project, create a feature branch off of `main`.
+
+This repository follows the [Samvera Community Code of Conduct](https://samvera.atlassian.net/wiki/spaces/samvera/pages/405212316/Code+of+Conduct) and [language recommendations](https://github.com/samvera/maintenance/blob/master/templates/CONTRIBUTING.md#language). Please ***do not*** create a branch called `master` for this repository or as part of your pull request; the branch will either need to be removed or renamed before it can be considered for inclusion in the code base and history of this repository.
