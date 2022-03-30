@@ -16,6 +16,9 @@ and up-to-date documentation about the Samvera orb exists on [the orb's CircleCI
 ### Product Owner
 [jrgriffiniii](https://github.com/jrgriffiniii)
 
+### Technical Lead
+[Collin Brittle](https://github.com/rotated8)
+
 ## Help
 
 The Samvera community is here to help. Please see our [support guide](./SUPPORT.md).
