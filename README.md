@@ -2,7 +2,7 @@
 
 The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier.
 
-Code: [![Build Status](https://circleci.com/gh/samvera-labs/samvera-circleci-orb.svg?style=svg)](https://circleci.com/gh/samvera-labs/samvera-circleci-orb)
+Code: [![Build Status](https://circleci.com/gh/samvera/samvera-circleci-orb.svg?style=svg)](https://circleci.com/gh/samvera/samvera-circleci-orb)
 
 The orb provides executors that include common Samvera dependencies, and commands to help set up and run your tests.
 
@@ -90,7 +90,7 @@ This software has been developed by and is brought to you by the Samvera communi
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/samvera-labs/samvera-circleci-orb/.
+Bug reports and pull requests are welcome on GitHub at https://github.com/samvera/samvera-circleci-orb/.
 
 If you're working on PR for this project, create a feature branch off of `main`.
 
