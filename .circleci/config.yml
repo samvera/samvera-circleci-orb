@@ -64,3 +64,18 @@ workflows:
                 requires:
                     - hold-for-approval
                 filters: *orb_promotion_filters
+    nightly:
+      triggers:
+        - schedule:
+            cron: "0 0 * * *"
+            filters:
+              branches:
+                only:
+                  - main
+      jobs:
+        - orb-tools/lint
+
+        - orb-tools/pack
+
+        - orb-tools/trigger-integration-tests-workflow:
+            name: trigger-integration-dev
