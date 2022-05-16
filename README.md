@@ -2,14 +2,19 @@
 
 The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier.
 
-Code: [![Build Status](https://circleci.com/gh/samvera/samvera-circleci-orb.svg?style=svg)](https://circleci.com/gh/samvera/samvera-circleci-orb)
+Code: [![Samvera Core Component](https://img.shields.io/badge/samvera-core--component-brightgreen)](https://github.com/samvera/maintenance#samvera-core-components)
+[![Build Status](https://circleci.com/gh/samvera/samvera-circleci-orb.svg?style=svg)](https://circleci.com/gh/samvera/samvera-circleci-orb)
+[![Version](https://img.shields.io/badge/orb-1.0.3-blue)](https://circleci.com/developer/orbs/orb/samvera/circleci-orb?version=1.0.3)
+
+Docs: [![Contribution Guidelines](http://img.shields.io/badge/CONTRIBUTING-Guidelines-blue.svg)](./CONTRIBUTING.md)
+[![Apache 2.0 License](http://img.shields.io/badge/APACHE2-license-blue.svg)](./LICENSE)
+
+Community Support: [![Samvera Community Slack](https://img.shields.io/badge/samvera-slack-blueviolet)](http://slack.samvera.org/)
 
 The orb provides executors that include common Samvera dependencies, and commands to help set up and run your tests.
 
 More information about orbs in general is available in [CircleCI's docs](https://circleci.com/docs/),
 and up-to-date documentation about the Samvera orb exists on [the orb's CircleCI page](https://circleci.com/orbs/registry/orb/samvera/circleci-orb)
-
-[![Samvera Slack](https://img.shields.io/badge/Slack-Jump%20In!-blueviolet)](http://slack.samvera.org/)
 
 ## Primary Contacts
 
