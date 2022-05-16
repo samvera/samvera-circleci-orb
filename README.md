@@ -1,7 +1,5 @@
 # Samvera CircleCI Orb
 
-The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier.
-
 Code: [![Samvera Core Component](https://img.shields.io/badge/samvera-core--component-brightgreen)](https://github.com/samvera/maintenance#samvera-core-components)
 [![Build Status](https://circleci.com/gh/samvera/samvera-circleci-orb.svg?style=svg)](https://circleci.com/gh/samvera/samvera-circleci-orb)
 [![Version](https://badges.circleci.com/orbs/samvera/circleci-orb.svg)](https://circleci.com/developer/orbs/orb/samvera/circleci-orb?version=1.0.3)
@@ -11,12 +9,15 @@ Docs: [![Contribution Guidelines](http://img.shields.io/badge/CONTRIBUTING-Guide
 
 Community Support: [![Samvera Community Slack](https://img.shields.io/badge/samvera-slack-blueviolet)](http://slack.samvera.org/)
 
-The orb provides executors that include common Samvera dependencies, and commands to help set up and run your tests.
+# What is the CircleCI Orb?
+
+The Samvera CircleCI Orb is meant to make testing Samvera and Samvera-based projects easier. The orb provides executors that include common Samvera dependencies, and commands to help set up and run your tests.
 
 More information about orbs in general is available in [CircleCI's docs](https://circleci.com/docs/),
 and up-to-date documentation about the Samvera orb exists on [the orb's CircleCI page](https://circleci.com/orbs/registry/orb/samvera/circleci-orb)
 
-## Primary Contacts
+## Product Owner & Maintenance
+The Samvera CircleCI Orb is a Core Component of the Samvera community. The documentation for what this means can be found [here](http://samvera.github.io/core_components.html#requirements-for-a-core-component).
 
 ### Product Owner
 [jrgriffiniii](https://github.com/jrgriffiniii)
