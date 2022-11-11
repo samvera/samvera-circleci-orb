@@ -2,7 +2,11 @@ version: 2.1
 
 orbs:
     orb-tools: circleci/orb-tools@10.0.3
-    samvera: samvera/circleci-orb@dev:alpha
+    # The following error is raised:
+    #
+    # The dev version of samvera/circleci-orb@dev:alpha has expired. Dev versions of orbs are only valid for 90 days after publishing.
+    # samvera: samvera/circleci-orb@dev:alpha
+    samvera: samvera/circleci-orb@1.0
 
 orb_promotion_filters: &orb_promotion_filters
     branches:
@@ -16,7 +20,8 @@ parameters:
         default: false
     dev-orb-version:
         type: string
-        default: 'dev:alpha'
+        # default: 'dev:alpha'
+        default: '1.0'
 
 jobs:
     integration-tests:
