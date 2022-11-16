@@ -17,13 +17,12 @@ More information about orbs in general is available in [CircleCI's docs](https:/
 and up-to-date documentation about the Samvera orb exists on [the orb's CircleCI page](https://circleci.com/orbs/registry/orb/samvera/circleci-orb)
 
 ## Product Owner & Maintenance
-The Samvera CircleCI Orb is a Core Component of the Samvera community. The documentation for what this means can be found [here](http://samvera.github.io/core_components.html#requirements-for-a-core-component).
+`samvera-circleci-orb` was a Core Component of the Samvera Community. Given a decline in available labor required for maintenance, this project no longer has a dedicated Product Owner. The documentation for what this means can be found [here](http://samvera.github.io/core_components.html#requirements-for-a-core-component).
 
 ### Product Owner
-[jrgriffiniii](https://github.com/jrgriffiniii)
+**Vacant**
 
-### Technical Lead
-[Collin Brittle](https://github.com/rotated8)
+_Until a Product Owner has been identified, we ask that you please direct all requests for support, bug reports, and general questions to the [`#dev` Channel on the Samvera Slack](https://samvera.slack.com/app_redirect?channel=dev)._
 
 ## Help
 
